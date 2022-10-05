@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Restaurent;
 use App\Models\Contacts;
+use App\Models\Gifts;
+use App\Models\RestaurentImages;
 use Validator;
 use Hash;
 use Log;
@@ -62,5 +65,28 @@ class UserController extends Controller
         }else{
             return $this->sendError('No contacts found against this user.');
         }
+    }
+
+    // Restaurent Dashboard API 
+    public function restaurentDashboard()
+    {
+        $loginUserId = Auth::user()->id;
+        $user = User::find($loginUserId);
+        $restaurent = Restaurent::find($user->restaurent_id);
+        $restaurent->restaurentImages = RestaurentImages::where('restaurent_id', $restaurent->id)->get();
+        $success['restaurent_detail'] = $restaurent;
+        $gifts = Gifts::where(['restaurent_id' => $restaurent->id, 'is_used' => 1])->get();
+        if(count($gifts) > 0){
+            foreach($gifts as $gift){
+                $usedAmount = $gift['gift_amount'] - $gift['remaining_amount'];
+                $userImage = User::where('phone', $gift['receiver_number'])->pluck('profile_img')->first();
+                $gift['usedAmount'] = $usedAmount;
+                $gift['userImage'] = $userImage;
+            }
+            $success['usedGifts'] = $gifts;
+        }else{
+            $success['usedGifts'] = [];
+        }
+        return $this->sendResponse($success,"Restaurent Dashboard data");
     }
 }

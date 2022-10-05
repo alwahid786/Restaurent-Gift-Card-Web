@@ -99,24 +99,31 @@ class GiftController extends Controller
     // Cut amount from voucher API 
     public function debitVoucher(DebitVoucherRequest $request)
     {
+        $loginUserId = Auth::user()->id;
         $remainAmount = QrCodes::where('id', $request->token_id)->pluck('remaining_amount')->first();
         if($request->bill_amount >= $remainAmount){
             $usedAmount = $remainAmount;
             QrCodes::where('id', $request->token_id)->update(['remaining_amount' => 0]);
-            Gifts::where('id', $request->gift_id)->update(['remaining_amount' => 0]);
+            Gifts::where('id', $request->gift_id)->update(['remaining_amount' => 0, "is_used" => 1]);
         }else{
             $remainAmount = $remainAmount - $request->bill_amount;
             $usedAmount = $request->bill_amount;
             QrCodes::where('id', $request->token_id)->update(['remaining_amount' => $remainAmount]);
-            Gifts::where('id', $request->gift_id)->update(['remaining_amount' => $remainAmount]);
+            Gifts::where('id', $request->gift_id)->update(['remaining_amount' => $remainAmount, "is_used" => 1]);
         }
+
+        // Add amount to restaurent balance
+        $restaurent = User::find($loginUserId);
+        $total_balance = Restaurent::where('id', $restaurent->id)->first(['total_balance','released_balance'])->toArray();
+        $newBalance = $total_balance['total_balance'] + $usedAmount;
+        $pending_balance = $total_balance['total_balance'] - $total_balance['released_balance'];
+        $saveData = Restaurent::where('id', $restaurent->id)->update(['total_balance' => $newBalance, 'pending_balance' => $pending_balance]);
 
         $receiverNumber = Gifts::where('id', $request->gift_id)->pluck('receiver_number')->first();
         $user = User::where('phone', $receiverNumber)->first();
 
         // Send Notification to User 
         $userNotification = new NotificationLog;
-        $loginUserId = Auth::user()->id;
         $userNotification->user_id = $loginUserId;
         $userNotification->notification_type = 'debit_gift';
         $userNotification->amount = $usedAmount;

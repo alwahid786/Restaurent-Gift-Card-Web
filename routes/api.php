@@ -47,6 +47,7 @@ Route::middleware('auth:api')->group(function () {
 Route::group(['prefix' => 'restaurent', 'middleware' => ['auth:api']], function () {
     Route::post('/gift_amount', [GiftController::class, 'giftAmount']);
     Route::post('/debit_voucher', [GiftController::class, 'debitVoucher']);
+    Route::get('/dashboard', [UserController::class, 'restaurentDashboard']);
 });
 
 // Admin Side API's List 
