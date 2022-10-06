@@ -26,7 +26,7 @@ class UserController extends Controller
         if(isset($request->profile_image) && !empty($request->profile_image)){
             if ($request->hasFile('profile_image')) {
             $destinationPath = base_path() . '/public/user_images/';
-            $uploadPath =  str_replace("/var/www/html", "", $destinationPath);
+            $uploadPath =  str_replace("/var/www/html/zare-bene", "", $destinationPath);
             // if (!is_dir($destinationPath)) {
             //     mkdir($destinationPath, 777, true);
             // }
@@ -34,7 +34,7 @@ class UserController extends Controller
 
             $name = time() . '.' . $image->getClientOriginalExtension();
             $image->move($destinationPath, $name);
-            $profile_image = $uploadPath . $name;
+            $profile_image = env('APP_URL') . $uploadPath . $name;
             dd($profile_image);
             User::where('id', $loginUserId)->update(['profile_img' => $profile_image]);
         }
