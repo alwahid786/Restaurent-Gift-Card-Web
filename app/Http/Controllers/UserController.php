@@ -34,7 +34,7 @@ class UserController extends Controller
 
             $name = time() . '.' . $image->getClientOriginalExtension();
             $image->move($destinationPath, $name);
-            $profile_image = env('APP_URL') . $uploadPath . $name;
+            $profile_image = "http://172.104.193.73/zare-bene" . $uploadPath . $name;
             dd($profile_image);
             User::where('id', $loginUserId)->update(['profile_img' => $profile_image]);
         }
