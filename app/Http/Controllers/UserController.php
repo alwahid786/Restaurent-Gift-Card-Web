@@ -24,7 +24,20 @@ class UserController extends Controller
     {
         $loginUserId = Auth::user()->id;
         if(isset($request->profile_image) && !empty($request->profile_image)){
-            User::where('id', $loginUserId)->update(['profile_img' => $request->profile_image]);
+            if ($request->hasFile('profile_image')) {
+            $destinationPath = base_path() . '/public/user_images/';
+            $uploadPath =  str_replace("/var/www/html", "", $destinationPath);
+            if (!is_dir($destinationPath)) {
+                mkdir($destinationPath, 777, true);
+            }
+            $image = $request->file('profile_image');
+
+            $name = time() . '.' . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $name);
+            $profile_image = $uploadPath . $name;
+            dd($profile_image);
+            User::where('id', $loginUserId)->update(['profile_img' => $profile_image]);
+        }
         }
         if(isset($request->name) && !empty($request->name)){
             User::where('id', $loginUserId)->update(['name' => $request->name]);
