@@ -27,9 +27,9 @@ class UserController extends Controller
             if ($request->hasFile('profile_image')) {
             $destinationPath = base_path() . '/public/user_images/';
             $uploadPath =  str_replace("/var/www/html", "", $destinationPath);
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 777, true);
-            }
+            // if (!is_dir($destinationPath)) {
+            //     mkdir($destinationPath, 777, true);
+            // }
             $image = $request->file('profile_image');
 
             $name = time() . '.' . $image->getClientOriginalExtension();
