@@ -101,9 +101,9 @@ class TransactionController extends Controller
                 mkdir($destinationPath, 777, true);
             }
             $name = time().rand();
-            $imagePath = $destinationPath . $name.'.png';
+            $imagePath = $destinationPath . $name.'.svg';
             $qrStringData = "token:".$qrCode->id.";date:".$qrCode->created_at.";restaurent_id:".$qrCode->restaurent_id.";";
-            $code = QrCode::format('png')->generate($qrStringData, $imagePath);
+            $code = QrCode::format('svg')->generate($qrStringData, $imagePath);
             // Check If user is registered on app or not 
             $user = User::where('phone', $request->receiver_number)->first();
             if(!empty($user)){
