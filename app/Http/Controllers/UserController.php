@@ -14,13 +14,14 @@ use Hash;
 use Log;
 use App\Http\Traits\ResponseTrait;
 use App\Http\Requests\User\CreateContactRequest;
+use App\Http\Requests\User\EditUserRequest;
 
 class UserController extends Controller
 {
     use ResponseTrait;
 
     // Edit Profile API 
-    public function editProfile(Request $request)
+    public function editProfile(EditUserRequest $request)
     {
         $loginUserId = Auth::user()->id;
         if(isset($request->profile_image) && !empty($request->profile_image)){
@@ -46,6 +47,11 @@ class UserController extends Controller
         }
         if(isset($request->email) && !empty($request->email)){
             User::where('id', $loginUserId)->update(['email' => $request->email]);
+        }
+        if(isset($request->address) && !empty($request->address)){
+            // User::where('id', $loginUserId)->update(['email' => $request->address]);
+            $user = User::find($loginUserId);
+            Restaurent::where('id', $user->restaurent_id)->update(['location' => $request->address]);
         }
         
         if(empty($request->all())){
