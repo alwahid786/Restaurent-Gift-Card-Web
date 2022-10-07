@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Traits\ResponseTrait;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Rules\EmailValidationRule;
 
 class EditUserRequest extends FormRequest
 {
@@ -29,7 +30,7 @@ class EditUserRequest extends FormRequest
     {
         return [
             'name' => 'unique:users|string|max:255',
-            'email' => 'email|unique:users',
+            'email' => ['email|unique:users', new EmailValidationRule],
             'phone' => 'string|unique:users',
             'profile_image' => 'file',
             'address' => 'string',
