@@ -136,6 +136,9 @@ class TransactionController extends Controller
         $loginUserId = Auth::user()->id;
         $user = User::find($loginUserId);
         $restaurent = Restaurent::find($user->restaurent_id);
+        if(empty($restaurent)){
+            return $this->sendError("Your restaurent profile does not exist. Login with restaurent profile.");
+        }
         // $restaurent->restaurentImages = RestaurentImages::where('restaurent_id', $restaurent->id)->get();
         // $success['restaurent_detail'] = $restaurent;
         $gifts = Gifts::where(['restaurent_id' => $restaurent->id, 'is_used' => 1])->get();
