@@ -96,7 +96,7 @@ class TransactionController extends Controller
             $qrCode->save();
             // Generate QR Code 
             $destinationPath = base_path() . '/public/qr_codes/';
-            $uploadPath =  str_replace('E:\xampp\htdocs\zare-bene', "", $destinationPath);
+            $uploadPath =  str_replace('/var/www/html/', "http://172.104.193.73/", $destinationPath);
             if (!is_dir($destinationPath)) {
                 mkdir($destinationPath, 777, true);
             }
