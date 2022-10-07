@@ -25,7 +25,7 @@ class EmailValidationRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        return preg_match('^[\w#][\w\.\’+#](.[\w\\’#]+)\@[a-zA-Z0-9]+(.[a-zA-Z0-9]+)*(.[a-zA-Z]{2,20})$', $value);
+        return preg_match('/(.+)@(.+)\.(.+)/i', $value);
     }
 
     /**
