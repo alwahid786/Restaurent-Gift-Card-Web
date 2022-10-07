@@ -31,6 +31,8 @@ class EditUserRequest extends FormRequest
             'name' => 'unique:users|string|max:255',
             'email' => 'email|unique:users',
             'phone' => 'string|unique:users',
+            'profile_image' => 'string|size:3MB',
+            'address' => 'string',
         ];
     }
 
