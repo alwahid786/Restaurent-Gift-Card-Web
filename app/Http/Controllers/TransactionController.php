@@ -130,4 +130,26 @@ class TransactionController extends Controller
         }
     }
 
+    // Transaction History API 
+    public function TransactionHistory()
+    {
+        $loginUserId = Auth::user()->id;
+        $user = User::find($loginUserId);
+        $restaurent = Restaurent::find($user->restaurent_id);
+        // $restaurent->restaurentImages = RestaurentImages::where('restaurent_id', $restaurent->id)->get();
+        // $success['restaurent_detail'] = $restaurent;
+        $gifts = Gifts::where(['restaurent_id' => $restaurent->id, 'is_used' => 1])->get();
+        if(count($gifts) > 0){
+            foreach($gifts as $gift){
+                $usedAmount = $gift['gift_amount'] - $gift['remaining_amount'];
+                $userImage = User::where('phone', $gift['receiver_number'])->pluck('profile_img')->first();
+                $gift['usedAmount'] = $usedAmount;
+                $gift['userImage'] = $userImage;
+            }
+            $success['usedGifts'] = $gifts;
+        }else{
+            $success['usedGifts'] = [];
+        }
+        return $this->sendResponse($success,"Transaction History Data");
+    }
 }

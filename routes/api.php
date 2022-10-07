@@ -48,6 +48,7 @@ Route::group(['prefix' => 'restaurent', 'middleware' => ['auth:api']], function 
     Route::post('/gift_amount', [GiftController::class, 'giftAmount']);
     Route::post('/debit_voucher', [GiftController::class, 'debitVoucher']);
     Route::get('/dashboard', [UserController::class, 'restaurentDashboard']);
+    Route::get('/transaction_history', [TransactionController::class, 'TransactionHistory']);
 });
 
 // Admin Side API's List 
