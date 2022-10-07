@@ -35,6 +35,6 @@ class EmailValidationRule implements Rule
      */
     public function message()
     {
-        return 'White spaces not allowed.';
+        return 'Email format is not valid.';
     }
 }
