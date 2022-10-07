@@ -30,7 +30,7 @@ class EditUserRequest extends FormRequest
     {
         return [
             'name' => 'unique:users|string|max:255',
-            'email' => ['email|unique:users', new EmailValidationRule],
+            'email' => ['unique:users', new EmailValidationRule],
             'phone' => 'string|unique:users',
             'profile_image' => 'file',
             'address' => 'string',
