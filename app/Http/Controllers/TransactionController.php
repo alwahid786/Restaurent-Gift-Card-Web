@@ -96,12 +96,12 @@ class TransactionController extends Controller
             $qrCode->save();
             // Generate QR Code 
             $destinationPath = base_path() . '/public/qr_codes/';
-            $uploadPath =  str_replace('/var/www/html/', "http://172.104.193.73/", $destinationPath);
             if (!is_dir($destinationPath)) {
                 mkdir($destinationPath, 777, true);
             }
             $name = time().rand();
-            $imagePath = $uploadPath . $name.'.svg';
+            $imagePath = $destinationPath . $name.'.svg';
+            $uploadPath =  str_replace('/var/www/html/', "http://172.104.193.73/", $imagePath);
             $qrStringData = "token:".$qrCode->id.";date:".$qrCode->created_at.";restaurent_id:".$qrCode->restaurent_id.";";
             $code = QrCode::format('svg')->generate($qrStringData, $imagePath);
             // Check If user is registered on app or not 
@@ -123,7 +123,7 @@ class TransactionController extends Controller
             }
             $success['transaction'] = $transaction;
             $success['qrCode'] = $qrCode;
-            $success['qrCode']['qrImage'] = $imagePath;
+            $success['qrCode']['qrImage'] = $uploadPath;
             return $this->sendResponse($success,'Transaction Created Successfully');
         }else{
             return $this->sendError('Transaction was not created successfully');
