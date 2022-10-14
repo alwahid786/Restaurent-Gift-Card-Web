@@ -25,8 +25,11 @@ class GiftController extends Controller
     // List of All restaurents API 
     public function restaurentList(Request $request)
     {
-        $restaurents = Restaurent::all();
-        if(!empty($restaurents)){
+        $restaurents = Restaurent::get();
+        if(count($restaurents) > 0){
+            foreach($restaurents as $restaurent) {
+                $restaurent['menu'] = RestaurentImages::where('restaurent_id', $restaurent['id'])->get();
+            }
             return $this->sendResponse($restaurents, 'List of all Restaurents');
         }else{
             return $this->sendError('No Restaurent available');
