@@ -117,10 +117,10 @@ class GiftController extends Controller
 
         // Add amount to restaurent balance
         $restaurent = User::find($loginUserId);
-        $total_balance = Restaurent::where('id', $restaurent->id)->first(['total_balance','released_balance'])->toArray();
+        $total_balance = Restaurent::where('id', $restaurent->restaurent_id)->first(['total_balance','released_balance'])->toArray();
         $newBalance = $total_balance['total_balance'] + $usedAmount;
         $pending_balance = $total_balance['total_balance'] - $total_balance['released_balance'];
-        $saveData = Restaurent::where('id', $restaurent->id)->update(['total_balance' => $newBalance, 'pending_balance' => $pending_balance]);
+        $saveData = Restaurent::where('id', $restaurent->restaurent_id)->update(['total_balance' => $newBalance, 'pending_balance' => $pending_balance]);
 
         $receiverNumber = Gifts::where('id', $request->gift_id)->pluck('receiver_number')->first();
         $user = User::where('phone', $receiverNumber)->first();
