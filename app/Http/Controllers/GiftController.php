@@ -87,7 +87,7 @@ class GiftController extends Controller
             $success['receivedGifts'] = $gifts;
             return $this->sendResponse($success, "List of all sent gifts");
         }else{
-            return $this->sendError('No gifts sent yet!');
+            return $this->sendError('No gifts received yet!');
         }
     }
 

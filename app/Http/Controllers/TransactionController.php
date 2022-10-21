@@ -104,7 +104,7 @@ class TransactionController extends Controller
             $uploadPath =  str_replace('/var/www/html/', "http://172.104.193.73/", $imagePath);
             $qrStringData = "token:".$qrCode->id.";date:".$qrCode->created_at.";restaurent_id:".$qrCode->restaurent_id.";";
             $code = QrCode::format('svg')->generate($qrStringData, $imagePath);
-            QrCodes::where('id', $qrCode->id)->update('qr_image', $uploadPath);
+            QrCodes::where('id', $qrCode->id)->update(['qr_image'=> $uploadPath]);
             // Check If user is registered on app or not 
             $user = User::where('phone', $request->receiver_number)->first();
             if(!empty($user)){
