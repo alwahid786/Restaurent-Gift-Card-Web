@@ -29,6 +29,7 @@ class AdminController extends Controller
         $user->phone = $request->phone;
         $user->restaurent_id = $restaurent->id;
         $user->user_type = "restaurent";
+        $user->profile_img = $restaurent->restaurent_logo;
         $user->save();
         if(isset($request->images) && !empty($request->images)){
             foreach($request->images as $image){
