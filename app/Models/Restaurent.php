@@ -20,5 +20,6 @@ class Restaurent extends Model
         'location',
         'phone',
         'image',
+        'restaurent_logo',
     ];
 }
