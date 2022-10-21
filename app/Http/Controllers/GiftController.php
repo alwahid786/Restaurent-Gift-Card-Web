@@ -26,12 +26,12 @@ class GiftController extends Controller
     public function restaurentList(Request $request)
     {
         $restaurents = Restaurent::get();
-        if(count($restaurents) > 0){
-            foreach($restaurents as $restaurent) {
+        if (count($restaurents) > 0) {
+            foreach ($restaurents as $restaurent) {
                 $restaurent['menu'] = RestaurentImages::where('restaurent_id', $restaurent['id'])->get();
             }
             return $this->sendResponse($restaurents, 'List of all Restaurents');
-        }else{
+        } else {
             return $this->sendError('No Restaurent available');
         }
     }
@@ -40,9 +40,9 @@ class GiftController extends Controller
     public function menuImages(Request $request)
     {
         $images = RestaurentImages::where('restaurent_id', $request->restaurent_id)->get();
-        if(count($images) > 0){
+        if (count($images) > 0) {
             return $this->sendResponse($images, 'Menu for this restaurent');
-        }else{
+        } else {
             return $this->sendError('No Images for this restaurent available');
         }
     }
@@ -52,15 +52,15 @@ class GiftController extends Controller
     {
         $loginUserId = Auth::user()->id;
         $gifts = Gifts::where('sender_id', $loginUserId)->get();
-        if(count($gifts) > 0){
-            foreach($gifts as $gift){
+        if (count($gifts) > 0) {
+            foreach ($gifts as $gift) {
                 $user = User::where('phone', $gift->receiver_number)->first();
-                if(!empty($user)){
+                if (!empty($user)) {
                     $gift['receiver_image'] = $user->profile_img;
                 }
             }
             return $this->sendResponse($gifts, "List of all sent gifts");
-        }else{
+        } else {
             return $this->sendError('No gifts sent yet!');
         }
     }
@@ -72,11 +72,11 @@ class GiftController extends Controller
         $number = User::where('id', $loginUserId)->pluck('phone')->first();
         $gifts = Gifts::where('receiver_number', $number)->get();
         $balance = 0;
-        if(count($gifts) > 0){
-            foreach($gifts as $gift){
+        if (count($gifts) > 0) {
+            foreach ($gifts as $gift) {
                 $balance = $balance + $gift->remaining_amount;
                 $user = User::where('id', $gift->sender_id)->first();
-                if(!empty($user)){
+                if (!empty($user)) {
                     $gift['sender_image'] = $user->profile_img;
                 }
                 $qrImage = QrCodes::where('gift_id', $gift->id)->pluck('qr_image')->first();
@@ -86,17 +86,18 @@ class GiftController extends Controller
             $success['availableBalance'] = $balance;
             $success['receivedGifts'] = $gifts;
             return $this->sendResponse($success, "List of all sent gifts");
-        }else{
+        } else {
             return $this->sendError('No gifts received yet!');
         }
     }
 
     // Show Gift Amount API 
-    public function giftAmount(GiftIdRequest $request){
+    public function giftAmount(GiftIdRequest $request)
+    {
         $giftdetail = QrCodes::find($request->token_id);
-        if(!empty($giftdetail)){
+        if (!empty($giftdetail)) {
             return $this->sendResponse($giftdetail, "Gift Details Found against token id");
-        }else{
+        } else {
             return $this->sendError('No gift found against this token.');
         }
     }
@@ -106,11 +107,11 @@ class GiftController extends Controller
     {
         $loginUserId = Auth::user()->id;
         $remainAmount = QrCodes::where('id', $request->token_id)->pluck('remaining_amount')->first();
-        if($request->bill_amount >= $remainAmount){
+        if ($request->bill_amount >= $remainAmount) {
             $usedAmount = $remainAmount;
             QrCodes::where('id', $request->token_id)->update(['remaining_amount' => 0]);
             Gifts::where('id', $request->gift_id)->update(['remaining_amount' => 0, "is_used" => 1]);
-        }else{
+        } else {
             $remainAmount = $remainAmount - $request->bill_amount;
             $usedAmount = $request->bill_amount;
             QrCodes::where('id', $request->token_id)->update(['remaining_amount' => $remainAmount]);
@@ -120,9 +121,9 @@ class GiftController extends Controller
         // Add amount to restaurent balance
         $restaurent = User::find($loginUserId);
         $total_balance = Restaurent::select('total_balance', 'released_balance')->where('id', $restaurent->restaurent_id)->first()->toArray();
-        dd($total_balance['total_balance']);
         $newBalance = $total_balance['total_balance'] + $usedAmount;
         $pending_balance = $total_balance['total_balance'] - $total_balance['released_balance'];
+        dd($newBalance);
         $saveData = Restaurent::where('id', $restaurent->restaurent_id)->update(['total_balance' => $newBalance, 'pending_balance' => $pending_balance]);
 
         $receiverNumber = Gifts::where('id', $request->gift_id)->pluck('receiver_number')->first();
@@ -135,9 +136,9 @@ class GiftController extends Controller
         $userNotification->amount = $usedAmount;
         $userNotification->gift_id = $request->gift_id;
         // if(!empty($user)){
-            $userNotification->receiver_id = $user->id;
+        $userNotification->receiver_id = $user->id;
         // }
-        $userNotification->receiver_number	 = $receiverNumber;
+        $userNotification->receiver_number     = $receiverNumber;
         $userNotification->save();
 
         // Send Notification to restaurent 
