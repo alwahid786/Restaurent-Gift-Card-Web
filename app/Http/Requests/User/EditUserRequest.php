@@ -29,7 +29,8 @@ class EditUserRequest extends FormRequest
      */
     public function rules()
     {
-        $id = auth()->user()->id;
+        $user = auth()->user();
+        dd($user);
         return [
             'name' => ['string', 'max:255', 'unique:users,name' . auth()->user()->id],
             'email' => ['unique:users,email' . auth()->user()->id, new EmailValidationRule],
