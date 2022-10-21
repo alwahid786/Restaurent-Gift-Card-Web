@@ -30,11 +30,10 @@ class EditUserRequest extends FormRequest
     public function rules()
     {
         $user = auth()->user();
-        dd($user);
         return [
-            'name' => ['string', 'max:255', 'unique:users,name' . auth()->user()->id],
-            'email' => ['unique:users,email' . auth()->user()->id, new EmailValidationRule],
-            'phone' => ['string', 'unique:users,phone' . auth()->user()->id],
+            'name' => ['string', 'max:255', 'unique:users,name' . auth()->user()->name],
+            'email' => ['unique:users,email' . auth()->user()->email, new EmailValidationRule],
+            'phone' => ['string', 'unique:users,phone' . auth()->user()->phone],
             'profile_image' => 'file',
             'address' => 'string',
         ];
