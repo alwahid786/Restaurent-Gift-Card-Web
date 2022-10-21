@@ -12,6 +12,8 @@ use App\Http\Traits\ResponseTrait;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendOTPMail;
 use Illuminate\Support\Facades\Password;
+use App\Models\Restaurent;
+
 
 
 class AuthController extends Controller
@@ -64,7 +66,9 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $userId = Auth::user()->id;
             $user = User::find($userId);
-            dd($user);
+            if($user->user_type == 'restaurent'){
+                $user['restaurentData'] = Restaurent::where('id', $user->restaurent_id)->first();
+            }
             $user['token'] = $user->createToken('loginToken')->accessToken;
             return $this->sendResponse($user, 'User logged in successfully.');
         }else{
