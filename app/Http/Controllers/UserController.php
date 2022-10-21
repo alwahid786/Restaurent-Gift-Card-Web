@@ -15,6 +15,7 @@ use Log;
 use App\Http\Traits\ResponseTrait;
 use App\Http\Requests\User\CreateContactRequest;
 use App\Http\Requests\User\EditUserRequest;
+use App\Models\QrCodes;
 
 class UserController extends Controller
 {
