@@ -150,7 +150,9 @@ class GiftController extends Controller
         $restaurentNotification->notification_type = 'gift_added';
         $restaurentNotification->amount = $usedAmount;
         $restaurentNotification->gift_id = $request->gift_id;
-        $restaurentNotification->receiver_id = $user->id;
+        if (!empty($user)) {
+            $restaurentNotification->receiver_id = $user->id;
+        }
         $restaurentNotification->receiver_number = $receiverNumber;
         $restaurentNotification->save();
 
