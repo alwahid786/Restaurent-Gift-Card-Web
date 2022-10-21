@@ -64,6 +64,7 @@ class AuthController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $userId = Auth::user()->id;
             $user = User::find($userId);
+            dd($user);
             $user['token'] = $user->createToken('loginToken')->accessToken;
             return $this->sendResponse($user, 'User logged in successfully.');
         }else{
