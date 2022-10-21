@@ -117,6 +117,9 @@ class GiftController extends Controller
             QrCodes::where('id', $request->token_id)->update(['remaining_amount' => $remainAmount]);
             Gifts::where('id', $request->gift_id)->update(['remaining_amount' => $remainAmount, "is_used" => 1]);
         }
+        if($remainAmount == 0){
+            return $this->sendError('No money remaining in voucher');
+        }
 
         // Add amount to restaurent balance
         $restaurent = User::find($loginUserId);
