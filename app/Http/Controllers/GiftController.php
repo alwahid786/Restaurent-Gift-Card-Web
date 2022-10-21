@@ -79,6 +79,8 @@ class GiftController extends Controller
                 if(!empty($user)){
                     $gift['sender_image'] = $user->profile_img;
                 }
+                $qrImage = QrCodes::where('gift_id', $gift->id)->pluck('qr_image')->first();
+                $gift['qr_image'] = $qrImage;
             }
             // $gifts['availableBalance'] = $balance;
             $success['availableBalance'] = $balance;
@@ -132,7 +134,9 @@ class GiftController extends Controller
         $userNotification->notification_type = 'debit_gift';
         $userNotification->amount = $usedAmount;
         $userNotification->gift_id = $request->gift_id;
-        $userNotification->receiver_id = $user->id;
+        // if(!empty($user)){
+            $userNotification->receiver_id = $user->id;
+        // }
         $userNotification->receiver_number	 = $receiverNumber;
         $userNotification->save();
 
