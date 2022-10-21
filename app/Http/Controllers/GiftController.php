@@ -137,9 +137,9 @@ class GiftController extends Controller
         $userNotification->notification_type = 'debit_gift';
         $userNotification->amount = $usedAmount;
         $userNotification->gift_id = $request->gift_id;
-        // if(!empty($user)){
-        $userNotification->receiver_id = $user->id;
-        // }
+        if (!empty($user)) {
+            $userNotification->receiver_id = $user->id;
+        }
         $userNotification->receiver_number     = $receiverNumber;
         $userNotification->save();
 
