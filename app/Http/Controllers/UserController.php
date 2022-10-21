@@ -100,6 +100,8 @@ class UserController extends Controller
                 $userImage = User::where('phone', $gift['receiver_number'])->pluck('profile_img')->first();
                 $gift['usedAmount'] = $usedAmount;
                 $gift['userImage'] = $userImage;
+                $qrImage = QrCodes::where('gift_id', $gift->id)->pluck('qr_image')->first();
+                $gift['qr_image'] = $qrImage;
             }
             $success['usedGifts'] = $gifts;
         }else{
